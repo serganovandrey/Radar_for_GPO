@@ -47,6 +47,8 @@ void generator::show_object(QPainter *painter)
 
 void generator::move_object()
 {
+    if (vect_X.isEmpty()) return;
+
     i=0;
     while (i<N)
     {
