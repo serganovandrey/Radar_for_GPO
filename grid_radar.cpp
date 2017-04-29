@@ -1,4 +1,5 @@
 #include "grid_radar.h"
+#include "widget.h"
 #include<QPainter>
 
 grid_radar::grid_radar(QWidget *parent) : QWidget(parent)
@@ -6,29 +7,36 @@ grid_radar::grid_radar(QWidget *parent) : QWidget(parent)
 
 }
 
+void grid_radar::set_value(float scale_setter, int center_x_setter, int center_y_setter)
+{
+    scl = scale_setter;
+    center_x = center_x_setter;
+    center_y = center_y_setter;
+
+    center_ellipce_x = 0 - (center_x*scl);
+    center_ellipce_y = 0 + (center_y*scl);
+}
+
 void grid_radar::draw_grid(QPainter *painter)
 {
-   painter->setPen(QPen(Qt::white, 1, Qt::SolidLine));
+   painter->setPen(QPen(Qt::white, 1*scl, Qt::SolidLine));
    painter->setRenderHint(QPainter::Antialiasing);
    painter->setBrush(QBrush(QColor("black")));
 
-   painter->drawEllipse(QPoint(), 350, 350);
-   painter->drawEllipse(QPoint(), 300, 300);
-   painter->drawEllipse(QPoint(), 250, 250);
-   painter->drawEllipse(QPoint(), 200, 200);
-   painter->drawEllipse(QPoint(), 150, 150);
-   painter->drawEllipse(QPoint(), 100, 100);
-   painter->drawEllipse(QPoint(), 50, 50);
-   painter->drawLine(0, -350, 0, 350);
-   painter->drawLine(-350, 0, 350, 0);
-   painter->drawText(5,15,"0");
-   painter->drawText(5,-35,"50");
-   painter->drawText(5,-85,"100");
-   painter->drawText(5,-135,"150");
-   painter->drawText(5,-185,"200");
-   painter->drawText(5,-235,"250");
-   painter->drawText(5,-285,"300");
-   painter->drawText(5,-335,"350");
+   for(i=350; i>=50; i=i-50)
+   {
+   painter->drawEllipse(center_ellipce_x-(i*scl), center_ellipce_y-(i*scl), i*2*scl, i*2*scl);
+   }
+
+   painter->drawLine(0*scl-(scl*center_x), -350*scl + (scl*center_y), 0*scl-(scl*center_x), 350*scl + (scl*center_y));
+   painter->drawLine(-350*scl -(scl*center_x), 0*scl + (scl*center_y), 350*scl -(scl*center_x), 0*scl + (scl*center_y));
+
+   for(i=15; i>=-335; i=i-50)
+   {
+       QFont font("Arial", 8*scl);
+       painter->setFont(font);
+       painter->drawText(5*scl-(scl*center_x),i*scl + (scl*center_y), str.setNum(abs(i-15)));
+   }
 
 }
 
